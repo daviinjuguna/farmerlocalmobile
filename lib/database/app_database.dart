@@ -1,16 +1,25 @@
 import 'dart:io';
 
+import 'package:farmerlocalmobile/database/breeder/breeders_dao.dart';
+import 'package:farmerlocalmobile/database/breeder/breeders_table.dart';
+import 'package:farmerlocalmobile/database/breeding/breeding_dao.dart';
+import 'package:farmerlocalmobile/database/breeding/breeding_table.dart';
+import 'package:farmerlocalmobile/database/feeding/feeding_dao.dart';
+import 'package:farmerlocalmobile/database/feeding/feeding_table.dart';
 import 'package:injectable/injectable.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'user/user_dao.dart';
+import 'user/user_table.dart';
+
 part 'app_database.g.dart';
 
 @UseMoor(
-  tables: [],
-  daos: [],
+  tables: [Users, Breeders, Feeding, Breeding],
+  daos: [UserDao, BreedersDao, FeedingDao, BreedingDao],
 )
 @lazySingleton
 class AppDatabase extends _$AppDatabase {
@@ -19,7 +28,14 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        beforeOpen: (detailt) async =>
+            await customStatement('PRAGMA foreign_keys = ON'),
+        onCreate: (m) => m.createAll(),
+      );
 }
 
 LazyDatabase _openConnection() {
