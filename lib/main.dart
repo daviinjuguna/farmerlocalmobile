@@ -22,6 +22,14 @@ class MyApp extends StatelessWidget {
       routeInformationParser: _appRouter.defaultRouteParser(),
       routerDelegate: _appRouter.delegate(),
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.lightGreenAccent.withOpacity(0.4),
+        appBarTheme: AppBarTheme(
+          actionsIconTheme: IconThemeData(color: Colors.white),
+          backgroundColor: Colors.green,
+          textTheme: TextTheme(),
+          titleTextStyle: TextStyle(color: Colors.white),
+          centerTitle: true,
+        ),
         primarySwatch: Colors.green,
         primaryColor: Colors.lightGreen,
       ),

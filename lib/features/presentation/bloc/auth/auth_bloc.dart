@@ -23,6 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading();
       final _res = await _login
           .call(LoginParams(email: event.email, password: event.password));
+      await Future.delayed(Duration(seconds: 1)); //*loading effect
       yield _res.fold(
         (l) => AuthError(error: l),
         (r) => AuthSuccess(message: "Logged In"),
@@ -32,6 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading();
       final _res = await _register.call(RegisterParams(
           name: event.name, email: event.email, password: event.password));
+      await Future.delayed(Duration(seconds: 1)); //*loading effect
       yield _res.fold(
         (l) => AuthError(error: l),
         (r) => AuthSuccess(message: "Registered"),

@@ -206,8 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             color: Colors.white,
                           ),
                           validator: (value) {
-                            if (!RegExp(NAME_REGEX).hasMatch(value!))
-                              return "Name is invalid";
+                            if (value!.isEmpty) return "Name is required";
                           },
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(

@@ -1,9 +1,13 @@
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 
 class UserModel extends User {
+  @override
   final int id;
+  @override
   final String name;
+  @override
   final DateTime createdAt;
+
   UserModel({
     required this.id,
     required this.name,
