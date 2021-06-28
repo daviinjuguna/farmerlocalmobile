@@ -2,6 +2,11 @@ import 'package:farmerlocalmobile/core/errors/exeptions.dart';
 
 const USER_ID = 'USER';
 
+const EMAIL_REGEX =
+    r"""^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+""";
+const PASS_REGEX = r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$';
+const NAME_REGEX = r"^[a-zA-Z]{2,30}$";
+
 const SERVER_FAILURE_MESSAGE = "Server error please try again";
 const NETWORK_FAILURE_MESSAGE = "Please activate your internet";
 const SOCKET_FAILURE_MESSAGE = "Seems you internet connection ran out";

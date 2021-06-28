@@ -6,8 +6,8 @@ class Breeding extends Table {
   IntColumn get kit => integer()();
   DateTimeColumn get date => dateTime()();
 
-  IntColumn get breeder =>
-      integer().customConstraint('NOT NULL REFERENCES breeders (id)')();
+  IntColumn get breeder => integer().customConstraint(
+      'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE')();
   IntColumn get mate =>
       integer().nullable().customConstraint('NULL REFERENCES breeders (id)')();
 }

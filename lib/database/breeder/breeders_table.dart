@@ -10,6 +10,6 @@ class Breeders extends Table {
   TextColumn get image => text().withDefault(const Constant(""))();
 
   //*foreign keys
-  IntColumn get user =>
-      integer().customConstraint('NOT NULL REFERENCES users (id)')();
+  IntColumn get user => integer()
+      .customConstraint('NOT NULL REFERENCES users (id) ON DELETE CASCADE')();
 }

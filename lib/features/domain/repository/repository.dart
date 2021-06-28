@@ -18,4 +18,5 @@ abstract class Repository {
   Future<Either<String, bool>> logout();
 
   Future<Either<String, User>> getUser();
+  Future<Either<String, bool>> checkAuth();
 }

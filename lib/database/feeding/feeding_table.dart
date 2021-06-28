@@ -8,6 +8,6 @@ class Feeding extends Table {
   BoolColumn get water => boolean()();
   DateTimeColumn get date => dateTime()();
 
-  IntColumn get breeder =>
-      integer().customConstraint('NOT NULL REFERENCES breeders (id)')();
+  IntColumn get breeder => integer().customConstraint(
+      'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE')();
 }

@@ -93,4 +93,17 @@ class Repo implements Repository {
       return left(failure);
     }
   }
+
+  @override
+  Future<Either<String, bool>> checkAuth() async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id != null) return right(true);
+      return right(false);
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
 }

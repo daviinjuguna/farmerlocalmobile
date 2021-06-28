@@ -14,11 +14,14 @@ import '../features/data/datasource/image.dart' as _i6;
 import '../features/data/datasource/local.dart' as _i7;
 import '../features/data/repository/repository_impl.dart' as _i9;
 import '../features/domain/repository/repository.dart' as _i8;
-import '../features/domain/usecase/get_user.dart' as _i10;
-import '../features/domain/usecase/login.dart' as _i11;
-import '../features/domain/usecase/logout.dart' as _i12;
-import '../features/domain/usecase/register.dart' as _i13;
-import 'module_injection.dart' as _i14; // ignore_for_file: unnecessary_lambdas
+import '../features/domain/usecase/check_auth.dart' as _i10;
+import '../features/domain/usecase/get_user.dart' as _i11;
+import '../features/domain/usecase/login.dart' as _i12;
+import '../features/domain/usecase/logout.dart' as _i13;
+import '../features/domain/usecase/register.dart' as _i14;
+import '../features/presentation/bloc/auth/auth_bloc.dart' as _i16;
+import '../features/presentation/bloc/splash/splash_bloc.dart' as _i15;
+import 'module_injection.dart' as _i17; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars
 /// initializes the registration of provided dependencies inside of [GetIt]
@@ -36,11 +39,15 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i7.Local(get<_i3.AppDatabase>(), get<_i5.SharedPreferences>()));
   gh.lazySingleton<_i8.Repository>(
       () => _i9.Repo(get<_i7.LocalDataSource>(), get<_i6.ImageDataSource>()));
-  gh.lazySingleton<_i10.GetUser>(() => _i10.GetUser(get<_i8.Repository>()));
-  gh.lazySingleton<_i11.Login>(() => _i11.Login(get<_i8.Repository>()));
-  gh.lazySingleton<_i12.Logout>(() => _i12.Logout(get<_i8.Repository>()));
-  gh.lazySingleton<_i13.Register>(() => _i13.Register(get<_i8.Repository>()));
+  gh.lazySingleton<_i10.CheckAuth>(() => _i10.CheckAuth(get<_i8.Repository>()));
+  gh.lazySingleton<_i11.GetUser>(() => _i11.GetUser(get<_i8.Repository>()));
+  gh.lazySingleton<_i12.Login>(() => _i12.Login(get<_i8.Repository>()));
+  gh.lazySingleton<_i13.Logout>(() => _i13.Logout(get<_i8.Repository>()));
+  gh.lazySingleton<_i14.Register>(() => _i14.Register(get<_i8.Repository>()));
+  gh.factory<_i15.SplashBloc>(() => _i15.SplashBloc(get<_i10.CheckAuth>()));
+  gh.factory<_i16.AuthBloc>(
+      () => _i16.AuthBloc(get<_i12.Login>(), get<_i14.Register>()));
   return get;
 }
 
-class _$ModuleInjection extends _i14.ModuleInjection {}
+class _$ModuleInjection extends _i17.ModuleInjection {}
