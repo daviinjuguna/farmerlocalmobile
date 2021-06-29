@@ -1,17 +1,24 @@
+import 'dart:io';
+
 import 'package:farmerlocalmobile/core/utils/constants.dart';
 import 'package:farmerlocalmobile/features/data/datasource/image.dart';
 import 'package:farmerlocalmobile/features/data/datasource/local.dart';
+import 'package:farmerlocalmobile/features/data/datasource/store_image.dart';
+import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
+import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:farmerlocalmobile/features/domain/repository/repository.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: Repository)
 class Repo implements Repository {
   final LocalDataSource _local;
   final ImageDataSource _image;
+  final StoreImage _store;
 
-  Repo(this._local, this._image);
+  Repo(this._local, this._image, this._store);
 
   //!pick images
   @override
@@ -100,6 +107,89 @@ class Repo implements Repository {
       final _id = await _local.getStoredUser();
       if (_id != null) return right(true);
       return right(false);
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Future<Either<String, String>> addBreeder({
+    required String name,
+    required double weight,
+    required bool gender,
+    required int age,
+    required File image,
+  }) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      final _imagePath = await _store.storeImage(image);
+
+      await _local.insertBreeders(
+        userId: _id,
+        name: name,
+        weight: weight,
+        gender: gender,
+        age: age,
+        image: _imagePath,
+      );
+      return right("Added");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Stream<Either<String, List<Breeders>>> watchBreeder() async* {
+    final _id = await _local.getStoredUser();
+    if (_id == null) throw UNAUTHENTICATED_FAILURE_MESSAGE;
+    yield* _local
+        .watchBreeders(_id)
+        .map((breeders) => right<String, List<Breeders>>(breeders))
+        .onErrorReturnWith((e, s) {
+      print(e.toString() + "," + s.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    });
+  }
+
+  @override
+  Future<Either<String, String>> updateBreeder(
+      {required int id, required Breeders breeders}) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.updateBreeder(
+          id: id,
+          e: BreedersModel(
+            id: breeders.id,
+            name: breeders.name,
+            weight: breeders.weight,
+            gender: breeders.gender,
+            age: breeders.age,
+            image: breeders.image,
+          ),
+          userId: _id);
+
+      return right("UPDATED");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Future<Either<String, String>> deleteBreeder(int id) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.deleteBreeder(id);
+      return right("DELETED");
     } catch (e) {
       print(e.toString());
       final failure = returnFailure(e);

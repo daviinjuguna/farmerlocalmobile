@@ -2,7 +2,7 @@ import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
 
 class BreedersModel extends Breeders {
   @override
-  final int userId;
+  final int id;
   @override
   final String name;
   @override
@@ -15,14 +15,14 @@ class BreedersModel extends Breeders {
   final String? image;
 
   BreedersModel({
-    required this.userId,
+    required this.id,
     required this.name,
     required this.weight,
     required this.gender,
     required this.age,
     this.image,
   }) : super(
-          userId: userId,
+          id: id,
           name: name,
           weight: weight,
           gender: gender,
@@ -31,7 +31,7 @@ class BreedersModel extends Breeders {
         );
 
   BreedersModel copyWith({
-    int? userId,
+    int? id,
     String? name,
     double? weight,
     bool? gender,
@@ -39,7 +39,7 @@ class BreedersModel extends Breeders {
     String? image,
   }) {
     return BreedersModel(
-      userId: userId ?? this.userId,
+      id: id ?? this.id,
       name: name ?? this.name,
       weight: weight ?? this.weight,
       gender: gender ?? this.gender,
@@ -53,7 +53,7 @@ class BreedersModel extends Breeders {
     if (identical(this, other)) return true;
 
     return other is BreedersModel &&
-        other.userId == userId &&
+        other.id == id &&
         other.name == name &&
         other.weight == weight &&
         other.gender == gender &&
@@ -63,7 +63,7 @@ class BreedersModel extends Breeders {
 
   @override
   int get hashCode {
-    return userId.hashCode ^
+    return id.hashCode ^
         name.hashCode ^
         weight.hashCode ^
         gender.hashCode ^
@@ -73,6 +73,6 @@ class BreedersModel extends Breeders {
 
   @override
   String toString() {
-    return 'BreedersModel(userId: $userId, name: $name, weight: $weight, gender: $gender, age: $age, image: $image)';
+    return 'BreedersModel(id: $id, name: $name, weight: $weight, gender: $gender, age: $age, image: $image)';
   }
 }

@@ -1,9 +1,11 @@
 import 'package:farmerlocalmobile/core/errors/exeptions.dart';
 import 'package:farmerlocalmobile/core/utils/constants.dart';
 import 'package:farmerlocalmobile/database/app_database.dart';
+import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
 import 'package:farmerlocalmobile/features/data/models/user_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class LocalDataSource {
   Future<bool> storeUserToCache(UserModel user);
@@ -22,6 +24,23 @@ abstract class LocalDataSource {
   });
 
   Future<UserModel> getUser(int id);
+
+  Future insertBreeders({
+    required int userId,
+    required String name,
+    required double weight,
+    required bool gender,
+    required int age,
+    required String? image,
+  });
+
+  Stream<List<BreedersModel>> watchBreeders(int userId);
+  Future updateBreeder({
+    required int id,
+    required BreedersModel e,
+    required int userId,
+  });
+  Future deleteBreeder(int id);
 }
 
 @LazySingleton(as: LocalDataSource)
@@ -101,6 +120,82 @@ class Local implements LocalDataSource {
         name: _user.name,
         createdAt: _user.createdAt,
       );
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future insertBreeders({
+    required int userId,
+    required String name,
+    required double weight,
+    required bool gender,
+    required int age,
+    required String? image,
+  }) async {
+    try {
+      await _db.breedersDao.addBreeders(
+          userId: userId,
+          name: name,
+          weight: weight,
+          gender: gender,
+          age: age,
+          image: image);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<BreedersModel>> watchBreeders(int userId) async* {
+    yield* _db.breedersDao
+        .watchBreeders(userId)
+        .map((breeders) => breeders
+            .map((e) => BreedersModel(
+                  id: e.id,
+                  name: e.name,
+                  weight: e.weight,
+                  gender: e.gender,
+                  age: e.age,
+                  image: e.image,
+                ))
+            .toList())
+        .onErrorReturnWith((error, stackTrace) {
+      throw DatabaseExeption();
+    });
+  }
+
+  @override
+  Future updateBreeder({
+    required int id,
+    required BreedersModel e,
+    required int userId,
+  }) async {
+    try {
+      await _db.breedersDao.updateBreeders(
+          id: id,
+          data: BreedersDataClass(
+            id: e.id,
+            name: e.name,
+            weight: e.weight,
+            gender: e.gender,
+            age: e.age,
+            image: e.image!,
+            user: userId,
+          ));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future deleteBreeder(int id) async {
+    try {
+      await _db.breedersDao.deleteBreeder(id);
     } catch (e) {
       print(e);
       rethrow;

@@ -647,7 +647,7 @@ class $BreedersTable extends Breeders
   late final GeneratedIntColumn user = _constructUser();
   GeneratedIntColumn _constructUser() {
     return GeneratedIntColumn('user', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES users (id)');
+        $customConstraints: 'NOT NULL REFERENCES users (id) ON DELETE CASCADE');
   }
 
   @override
@@ -1010,7 +1010,8 @@ class $FeedingTable extends Feeding
   late final GeneratedIntColumn breeder = _constructBreeder();
   GeneratedIntColumn _constructBreeder() {
     return GeneratedIntColumn('breeder', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES breeders (id)');
+        $customConstraints:
+            'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
   }
 
   @override
@@ -1319,7 +1320,8 @@ class $BreedingTable extends Breeding
   late final GeneratedIntColumn breeder = _constructBreeder();
   GeneratedIntColumn _constructBreeder() {
     return GeneratedIntColumn('breeder', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES breeders (id)');
+        $customConstraints:
+            'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
   }
 
   final VerificationMeta _mateMeta = const VerificationMeta('mate');

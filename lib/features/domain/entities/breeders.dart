@@ -1,12 +1,12 @@
 class Breeders {
-  final int userId;
+  final int id;
   final String name;
   final double weight;
   final bool gender;
   final int age;
   final String? image;
   Breeders({
-    required this.userId,
+    required this.id,
     required this.name,
     required this.weight,
     required this.gender,
@@ -19,7 +19,7 @@ class Breeders {
     if (identical(this, other)) return true;
 
     return other is Breeders &&
-        other.userId == userId &&
+        other.id == id &&
         other.name == name &&
         other.weight == weight &&
         other.gender == gender &&
@@ -29,7 +29,7 @@ class Breeders {
 
   @override
   int get hashCode {
-    return userId.hashCode ^
+    return id.hashCode ^
         name.hashCode ^
         weight.hashCode ^
         gender.hashCode ^
@@ -38,7 +38,7 @@ class Breeders {
   }
 
   Breeders copyWith({
-    int? userId,
+    int? id,
     String? name,
     double? weight,
     bool? gender,
@@ -46,7 +46,7 @@ class Breeders {
     String? image,
   }) {
     return Breeders(
-      userId: userId ?? this.userId,
+      id: id ?? this.id,
       name: name ?? this.name,
       weight: weight ?? this.weight,
       gender: gender ?? this.gender,
@@ -57,6 +57,6 @@ class Breeders {
 
   @override
   String toString() {
-    return 'Breeders(userId: $userId, name: $name, weight: $weight, gender: $gender, age: $age, image: $image)';
+    return 'Breeders(id: $id, name: $name, weight: $weight, gender: $gender, age: $age, image: $image)';
   }
 }

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       routeInformationParser: _appRouter.defaultRouteParser(),
       routerDelegate: _appRouter.delegate(),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.lightGreenAccent.withOpacity(0.4),
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
           actionsIconTheme: IconThemeData(color: Colors.white),
           backgroundColor: Colors.green,

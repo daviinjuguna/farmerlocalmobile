@@ -42,11 +42,20 @@ class BreedersDao extends DatabaseAccessor<AppDatabase>
         throw DatabaseExeption();
       });
 
+  Future deleteBreeder(int id) =>
+      (delete(breeders)..where((tbl) => tbl.id.equals(id)))
+          .go()
+          .onError((error, stackTrace) {
+        print("ERROR DELETE BREEDERS: $error,$stackTrace");
+        throw DatabaseExeption();
+      });
+
   Future updateBreeders({
     required int id,
+    required BreedersDataClass data,
   }) =>
       (update(breeders)..where((tbl) => tbl.id.equals(id)))
-          .write(BreedersCompanion())
+          .write(data)
           .onError((error, stackTrace) {
         print("ERROE EDIT BREEDER: $error,$stackTrace");
         throw DatabaseExeption();
