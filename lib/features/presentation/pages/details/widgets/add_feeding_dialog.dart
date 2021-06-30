@@ -1,13 +1,12 @@
+import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
 import 'package:farmerlocalmobile/features/presentation/pages/details/widgets/add_feeding_object.dart';
 import 'package:farmerlocalmobile/features/presentation/widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddFeedingDialog extends StatefulWidget {
-  const AddFeedingDialog({
-    Key? key,
-  }) : super(key: key);
-
+  const AddFeedingDialog({Key? key, this.feeding}) : super(key: key);
+  final Feeding? feeding;
   @override
   _AddFeedingDialogState createState() => _AddFeedingDialogState();
 }
@@ -18,6 +17,11 @@ class _AddFeedingDialogState extends State<AddFeedingDialog> {
   @override
   void initState() {
     super.initState();
+    _isWater = widget.feeding?.water ?? false;
+    _dryMatter = TextEditingController(
+        text: widget.feeding?.dryMatter.toStringAsFixed(2));
+    _greenMatter = TextEditingController(
+        text: widget.feeding?.greenMatter.toStringAsFixed(2));
   }
 
   bool _isWater = false;
@@ -33,7 +37,7 @@ class _AddFeedingDialogState extends State<AddFeedingDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       scrollable: true,
-      title: Text("ADD FEEDING"),
+      title: Text(widget.feeding != null ? "EDIT FEEDING" : "ADD FEEDING"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

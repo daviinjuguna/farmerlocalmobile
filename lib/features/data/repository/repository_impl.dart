@@ -5,6 +5,7 @@ import 'package:farmerlocalmobile/features/data/datasource/image.dart';
 import 'package:farmerlocalmobile/features/data/datasource/local.dart';
 import 'package:farmerlocalmobile/features/data/datasource/store_image.dart';
 import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
+import 'package:farmerlocalmobile/features/data/models/feeding_model.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
 import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
@@ -245,5 +246,43 @@ class Repo implements Repository {
       final failure = returnFailure(e);
       return left(failure);
     });
+  }
+
+  @override
+  Future<Either<String, String>> updateFeeding(
+      {required int id, required Feeding feeding}) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.updateFeeding(
+          feedingId: id,
+          e: FeedingModel(
+            id: feeding.id,
+            dryMatter: feeding.dryMatter,
+            greenMatter: feeding.greenMatter,
+            water: feeding.water,
+            date: feeding.date,
+            breeder: feeding.breeder,
+          ));
+      return right("Edited");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Future<Either<String, String>> deleteFeeding(int id) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.deleteFeeding(id);
+      return right("Deleted");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
   }
 }

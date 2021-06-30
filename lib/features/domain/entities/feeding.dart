@@ -4,12 +4,14 @@ class Feeding {
   final double greenMatter;
   final bool water;
   final DateTime date;
+  final int breeder;
   Feeding({
     required this.id,
     required this.dryMatter,
     required this.greenMatter,
     required this.water,
     required this.date,
+    required this.breeder,
   });
 
   @override
@@ -21,7 +23,8 @@ class Feeding {
         other.dryMatter == dryMatter &&
         other.greenMatter == greenMatter &&
         other.water == water &&
-        other.date == date;
+        other.date == date &&
+        other.breeder == breeder;
   }
 
   @override
@@ -30,7 +33,8 @@ class Feeding {
         dryMatter.hashCode ^
         greenMatter.hashCode ^
         water.hashCode ^
-        date.hashCode;
+        date.hashCode ^
+        breeder.hashCode;
   }
 
   Feeding copyWith({
@@ -39,6 +43,7 @@ class Feeding {
     double? greenMatter,
     bool? water,
     DateTime? date,
+    int? breeder,
   }) {
     return Feeding(
       id: id ?? this.id,
@@ -46,11 +51,12 @@ class Feeding {
       greenMatter: greenMatter ?? this.greenMatter,
       water: water ?? this.water,
       date: date ?? this.date,
+      breeder: breeder ?? this.breeder,
     );
   }
 
   @override
   String toString() {
-    return 'Feeding(id: $id, dryMatter: $dryMatter, greenMatter: $greenMatter, water: $water, date: $date)';
+    return 'Feeding(id: $id, dryMatter: $dryMatter, greenMatter: $greenMatter, water: $water, date: $date, breeder: $breeder)';
   }
 }

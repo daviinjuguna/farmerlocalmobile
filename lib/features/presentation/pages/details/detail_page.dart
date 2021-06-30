@@ -186,6 +186,63 @@ class _DetailsPageState extends State<DetailsPage> {
                             }).catchError((e, s) {
                               print("ADD FEEDING ERROR: $e,$s");
                             }),
+                            delete: (feeding) => showDialog<bool?>(
+                              context: context,
+                              builder: (builder) => AlertDialog(
+                                title: Text("DELETE"),
+                                content:
+                                    Text("Are you sure you want to delete?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(null),
+                                    child: Text(
+                                      "CANCEL",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.4,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: Text(
+                                      "DELETE",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.4,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).then((value) {
+                              if (value != null && value) {
+                                _feedingBloc
+                                    .add(DeleteFeedingEvent(id: feeding.id));
+                              } else {
+                                print("NTAKUFINYA");
+                              }
+                            }).catchError((e, s) {
+                              print("ERROR DELETE: $e,$s");
+                            }),
+                            edit: (feeding) => showDialog<AddFeedingObject?>(
+                                    context: context,
+                                    builder: (builder) =>
+                                        AddFeedingDialog(feeding: feeding))
+                                .then((value) {
+                              if (value != null) {
+                                _feedingBloc.add(UpdateFeedingEvent(
+                                    id: feeding.id, feeding: feeding));
+                              } else {
+                                print("NTAKUFINYA");
+                              }
+                            }).catchError((e, s) {
+                              print("ERROR EDIT: $e,$s");
+                            }),
                           );
                         } else if (snapshot.hasError) {
                           return Text("Error Msee");
@@ -197,6 +254,8 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                 ),
+
+                //!BREEDING
                 Container(),
               ],
             ),

@@ -60,7 +60,7 @@ Color getColor(Set<MaterialState> states) {
     MaterialState.focused,
   };
   if (states.any(interactiveStates.contains)) {
-    return Colors.lightGreen;
+    return Colors.lightGreenAccent;
   }
   return Colors.green;
 }

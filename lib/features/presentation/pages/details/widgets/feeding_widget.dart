@@ -8,10 +8,14 @@ class FeedingWidget extends StatelessWidget {
     Key? key,
     required this.feeding,
     required this.addFeeding,
+    required this.delete,
+    required this.edit,
   }) : super(key: key);
 
   final List<Feeding> feeding;
   final VoidCallback addFeeding;
+  final Function(Feeding feeding) delete;
+  final Function(Feeding feeding) edit;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,12 @@ class FeedingWidget extends StatelessWidget {
                       DataColumn(
                           label: Text("Water (YES/NO)",
                               style: TextStyle(color: Colors.white))),
+                      DataColumn(
+                        label: Text(
+                          "Action",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
                     ],
                     rows: feeding
                         .map(
@@ -54,6 +64,20 @@ class FeedingWidget extends StatelessWidget {
                               DataCell(Text("${e.dryMatter}")),
                               DataCell(Text("${e.greenMatter}")),
                               DataCell(Text(e.water ? "YES" : "NO")),
+                              DataCell(Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () => edit(e),
+                                    icon: Icon(Icons.edit),
+                                    color: Colors.green,
+                                  ),
+                                  IconButton(
+                                    onPressed: () => delete(e),
+                                    color: Colors.red,
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
+                              ))
                             ],
                           ),
                         )

@@ -48,4 +48,9 @@ abstract class Repository {
     required int breederId,
   });
   Stream<Either<String, List<Feeding>>> watchFeeding(int breederId);
+  Future<Either<String, String>> updateFeeding({
+    required int id,
+    required Feeding feeding,
+  });
+  Future<Either<String, String>> deleteFeeding(int id);
 }

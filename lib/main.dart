@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
         ),
         primarySwatch: Colors.green,
-        primaryColor: Colors.lightGreen,
+        primaryColor: Colors.green,
       ),
     );
   }

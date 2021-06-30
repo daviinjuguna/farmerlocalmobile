@@ -12,18 +12,22 @@ class FeedingModel extends Feeding {
   @override
   final DateTime date;
 
+  final int breeder;
+
   FeedingModel({
     required this.id,
     required this.dryMatter,
     required this.greenMatter,
     required this.water,
     required this.date,
+    required this.breeder,
   }) : super(
           date: date,
           id: id,
           dryMatter: dryMatter,
           water: water,
           greenMatter: greenMatter,
+          breeder: breeder,
         );
 
   FeedingModel copyWith({
@@ -32,6 +36,7 @@ class FeedingModel extends Feeding {
     double? greenMatter,
     bool? water,
     DateTime? date,
+    int? breeder,
   }) {
     return FeedingModel(
       id: id ?? this.id,
@@ -39,6 +44,7 @@ class FeedingModel extends Feeding {
       greenMatter: greenMatter ?? this.greenMatter,
       water: water ?? this.water,
       date: date ?? this.date,
+      breeder: breeder ?? this.breeder,
     );
   }
 
@@ -51,7 +57,8 @@ class FeedingModel extends Feeding {
         other.dryMatter == dryMatter &&
         other.greenMatter == greenMatter &&
         other.water == water &&
-        other.date == date;
+        other.date == date &&
+        other.breeder == breeder;
   }
 
   @override
@@ -60,11 +67,12 @@ class FeedingModel extends Feeding {
         dryMatter.hashCode ^
         greenMatter.hashCode ^
         water.hashCode ^
-        date.hashCode;
+        date.hashCode ^
+        breeder.hashCode;
   }
 
   @override
   String toString() {
-    return 'FeedingModel(id: $id, dryMatter: $dryMatter, greenMatter: $greenMatter, water: $water, date: $date)';
+    return 'FeedingModel(id: $id, dryMatter: $dryMatter, greenMatter: $greenMatter, water: $water, date: $date, breeder: $breeder)';
   }
 }

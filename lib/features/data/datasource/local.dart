@@ -52,6 +52,13 @@ abstract class LocalDataSource {
     required bool water,
   });
   Stream<List<FeedingModel>> watchFeeding(int breederId);
+
+  Future updateFeeding({
+    required int feedingId,
+    required FeedingModel e,
+  });
+
+  Future deleteFeeding(int id);
 }
 
 @LazySingleton(as: LocalDataSource)
@@ -243,10 +250,42 @@ class Local implements LocalDataSource {
                   greenMatter: e.greenMatter,
                   water: e.water,
                   date: e.date,
+                  breeder: e.breeder,
                 ))
             .toList())
         .onErrorReturnWith((error, stackTrace) {
       throw DatabaseExeption();
     });
+  }
+
+  @override
+  Future updateFeeding({
+    required int feedingId,
+    required FeedingModel e,
+  }) async {
+    try {
+      await _db.feedingDao.updateFeedint(
+          id: feedingId,
+          feed: FeedingDataClass(
+              id: e.id,
+              dryMatter: e.dryMatter,
+              greenMatter: e.greenMatter,
+              water: e.water,
+              date: e.date,
+              breeder: e.breeder));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future deleteFeeding(int id) async {
+    try {
+      await _db.feedingDao.deleteFeeding(id);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

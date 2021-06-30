@@ -29,11 +29,31 @@ class FeedingDao extends DatabaseAccessor<AppDatabase> with _$FeedingDaoMixin {
         throw DatabaseExeption();
       });
 
-  Stream<List<FeedingDataClass>> watchFeeding(int breederId) =>
-      (select(feeding)..where((tbl) => tbl.breeder.equals(breederId)))
+  Stream<List<FeedingDataClass>> watchFeeding(int breederId) => (select(feeding)
+            ..where((tbl) => tbl.breeder.equals(breederId))
+            ..orderBy([(u) => OrderingTerm.desc(u.date)]))
           .watch()
           .onErrorReturnWith((error, stackTrace) {
         print("ERROR WATCH BREEDER: $error,$stackTrace");
+        throw DatabaseExeption();
+      });
+
+  Future updateFeedint({
+    required int id,
+    required FeedingDataClass feed,
+  }) =>
+      (update(feeding)..where((tbl) => tbl.id.equals(id)))
+          .write(feed.copyWith(date: DateTime.now()))
+          .onError((error, stackTrace) {
+        print("ERROR UPDATE FEEDING: $error,$stackTrace");
+        throw DatabaseExeption();
+      });
+
+  Future deleteFeeding(int id) =>
+      (delete(feeding)..where((tbl) => tbl.id.equals(id)))
+          .go()
+          .onError((error, stackTrace) {
+        print("ERROR DELETE FEEDING: $error,$stackTrace");
         throw DatabaseExeption();
       });
 }

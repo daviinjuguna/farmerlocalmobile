@@ -49,9 +49,9 @@ class InsertFeedingEvent extends FeedingEvent {
   }
 }
 
-class DeleteFeeding extends FeedingEvent {
+class DeleteFeedingEvent extends FeedingEvent {
   final int id;
-  DeleteFeeding({
+  DeleteFeedingEvent({
     required this.id,
   });
 
@@ -59,7 +59,7 @@ class DeleteFeeding extends FeedingEvent {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is DeleteFeeding && other.id == id;
+    return other is DeleteFeedingEvent && other.id == id;
   }
 
   @override
@@ -67,4 +67,28 @@ class DeleteFeeding extends FeedingEvent {
 
   @override
   String toString() => 'DeleteFeeding(id: $id)';
+}
+
+class UpdateFeedingEvent extends FeedingEvent {
+  final int id;
+  final Feeding feeding;
+  UpdateFeedingEvent({
+    required this.id,
+    required this.feeding,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UpdateFeedingEvent &&
+        other.id == id &&
+        other.feeding == feeding;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ feeding.hashCode;
+
+  @override
+  String toString() => 'UpdateFeedingEvent(id: $id, feeding: $feeding)';
 }
