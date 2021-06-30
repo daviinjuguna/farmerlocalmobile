@@ -1086,13 +1086,13 @@ class BreedingDataClass extends DataClass
   final int kit;
   final DateTime date;
   final int breeder;
-  final int? mate;
+  final int mate;
   BreedingDataClass(
       {required this.id,
       required this.kit,
       required this.date,
       required this.breeder,
-      this.mate});
+      required this.mate});
   factory BreedingDataClass.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -1107,7 +1107,7 @@ class BreedingDataClass extends DataClass
       breeder: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}breeder'])!,
       mate: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}mate']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}mate'])!,
     );
   }
   @override
@@ -1117,9 +1117,7 @@ class BreedingDataClass extends DataClass
     map['kit'] = Variable<int>(kit);
     map['date'] = Variable<DateTime>(date);
     map['breeder'] = Variable<int>(breeder);
-    if (!nullToAbsent || mate != null) {
-      map['mate'] = Variable<int?>(mate);
-    }
+    map['mate'] = Variable<int>(mate);
     return map;
   }
 
@@ -1129,7 +1127,7 @@ class BreedingDataClass extends DataClass
       kit: Value(kit),
       date: Value(date),
       breeder: Value(breeder),
-      mate: mate == null && nullToAbsent ? const Value.absent() : Value(mate),
+      mate: Value(mate),
     );
   }
 
@@ -1141,7 +1139,7 @@ class BreedingDataClass extends DataClass
       kit: serializer.fromJson<int>(json['kit']),
       date: serializer.fromJson<DateTime>(json['date']),
       breeder: serializer.fromJson<int>(json['breeder']),
-      mate: serializer.fromJson<int?>(json['mate']),
+      mate: serializer.fromJson<int>(json['mate']),
     );
   }
   @override
@@ -1152,7 +1150,7 @@ class BreedingDataClass extends DataClass
       'kit': serializer.toJson<int>(kit),
       'date': serializer.toJson<DateTime>(date),
       'breeder': serializer.toJson<int>(breeder),
-      'mate': serializer.toJson<int?>(mate),
+      'mate': serializer.toJson<int>(mate),
     };
   }
 
@@ -1198,7 +1196,7 @@ class BreedingCompanion extends UpdateCompanion<BreedingDataClass> {
   final Value<int> kit;
   final Value<DateTime> date;
   final Value<int> breeder;
-  final Value<int?> mate;
+  final Value<int> mate;
   const BreedingCompanion({
     this.id = const Value.absent(),
     this.kit = const Value.absent(),
@@ -1211,16 +1209,17 @@ class BreedingCompanion extends UpdateCompanion<BreedingDataClass> {
     required int kit,
     required DateTime date,
     required int breeder,
-    this.mate = const Value.absent(),
+    required int mate,
   })  : kit = Value(kit),
         date = Value(date),
-        breeder = Value(breeder);
+        breeder = Value(breeder),
+        mate = Value(mate);
   static Insertable<BreedingDataClass> custom({
     Expression<int>? id,
     Expression<int>? kit,
     Expression<DateTime>? date,
     Expression<int>? breeder,
-    Expression<int?>? mate,
+    Expression<int>? mate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1236,7 +1235,7 @@ class BreedingCompanion extends UpdateCompanion<BreedingDataClass> {
       Value<int>? kit,
       Value<DateTime>? date,
       Value<int>? breeder,
-      Value<int?>? mate}) {
+      Value<int>? mate}) {
     return BreedingCompanion(
       id: id ?? this.id,
       kit: kit ?? this.kit,
@@ -1262,7 +1261,7 @@ class BreedingCompanion extends UpdateCompanion<BreedingDataClass> {
       map['breeder'] = Variable<int>(breeder.value);
     }
     if (mate.present) {
-      map['mate'] = Variable<int?>(mate.value);
+      map['mate'] = Variable<int>(mate.value);
     }
     return map;
   }
@@ -1328,8 +1327,8 @@ class $BreedingTable extends Breeding
   @override
   late final GeneratedIntColumn mate = _constructMate();
   GeneratedIntColumn _constructMate() {
-    return GeneratedIntColumn('mate', $tableName, true,
-        $customConstraints: 'NULL REFERENCES breeders (id)');
+    return GeneratedIntColumn('mate', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES breeders (id)');
   }
 
   @override
@@ -1369,6 +1368,8 @@ class $BreedingTable extends Breeding
     if (data.containsKey('mate')) {
       context.handle(
           _mateMeta, mate.isAcceptableOrUnknown(data['mate']!, _mateMeta));
+    } else if (isInserting) {
+      context.missing(_mateMeta);
     }
     return context;
   }

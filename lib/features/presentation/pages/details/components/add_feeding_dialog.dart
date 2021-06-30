@@ -1,8 +1,9 @@
 import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
-import 'package:farmerlocalmobile/features/presentation/pages/details/widgets/add_feeding_object.dart';
 import 'package:farmerlocalmobile/features/presentation/widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'add_feeding_object.dart';
 
 class AddFeedingDialog extends StatefulWidget {
   const AddFeedingDialog({Key? key, this.feeding}) : super(key: key);

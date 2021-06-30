@@ -1,13 +1,16 @@
 import 'package:farmerlocalmobile/di/injection.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
+import 'package:farmerlocalmobile/features/presentation/bloc/breeding/breeding_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/feeding/feeding_bloc.dart';
+import 'package:farmerlocalmobile/features/presentation/bloc/watch_blocs/watch_breeding.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/watch_blocs/watch_feeding.dart';
-import 'package:farmerlocalmobile/features/presentation/pages/details/widgets/add_feeding_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/add_feeding_dialog.dart';
+import 'components/add_feeding_dialog.dart';
+import 'components/add_feeding_object.dart';
+import 'widgets/breeding_widget.dart';
 import 'widgets/feeding_widget.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -20,12 +23,15 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   late final _feedingBloc = getIt<FeedingBloc>();
+  late final _breedingBloc = getIt<BreedingBloc>();
   late final _watchFeeding = getIt<WatchFeedingBloc>();
+  late final _watchBreeding = getIt<WatchBreedingBloc>();
 
   @override
   void initState() {
     super.initState();
     _watchFeeding.streamFeeding(widget.breeders.id);
+    _watchBreeding.watchBreeding(widget.breeders.id);
   }
 
   @override
@@ -33,6 +39,8 @@ class _DetailsPageState extends State<DetailsPage> {
     super.dispose();
     _feedingBloc.close();
     _watchFeeding.close();
+    _breedingBloc.close();
+    _watchBreeding.close();
   }
 
   @override
@@ -40,9 +48,100 @@ class _DetailsPageState extends State<DetailsPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (create) => _feedingBloc),
+        BlocProvider(create: (create) => _breedingBloc),
       ],
       child: MultiBlocListener(
         listeners: [
+          BlocListener<BreedingBloc, BreedingState>(
+            listener: (c, state) {
+              if (state is BreedingLoading) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.blue,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Loading...",
+                          ),
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+              }
+              if (state is BreedingSuccess) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "SUCCESS",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text("Request success")
+                        ],
+                      ),
+                    ),
+                  );
+              }
+              if (state is BreedingError) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "ERROR",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          // SizedBox(height: 3),
+                          Text(state.error)
+                        ],
+                      ),
+                    ),
+                  );
+              }
+            },
+          ),
           BlocListener<FeedingBloc, FeedingState>(
             listener: (c, state) {
               if (state is FeedingLoading) {
@@ -256,7 +355,29 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
 
                 //!BREEDING
-                Container(),
+                Provider<WatchBreedingBloc>(
+                  create: (_) => _watchBreeding,
+                  child: Container(
+                    child: StreamBuilder<BreedingResponse>(
+                        stream: _watchBreeding.subJect.stream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data!.error != null &&
+                                snapshot.data!.error!.length > 0) {
+                              return Text("Error Msee");
+                            }
+                            return BreedingWidget(
+                              breeding: snapshot.data!.breeding,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("Error Msee");
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }),
+                  ),
+                ),
               ],
             ),
           ),

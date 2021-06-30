@@ -2,6 +2,7 @@ import 'package:farmerlocalmobile/core/errors/exeptions.dart';
 import 'package:farmerlocalmobile/core/utils/constants.dart';
 import 'package:farmerlocalmobile/database/app_database.dart';
 import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
+import 'package:farmerlocalmobile/features/data/models/breeding_model.dart';
 import 'package:farmerlocalmobile/features/data/models/feeding_model.dart';
 import 'package:farmerlocalmobile/features/data/models/user_model.dart';
 import 'package:injectable/injectable.dart';
@@ -59,6 +60,14 @@ abstract class LocalDataSource {
   });
 
   Future deleteFeeding(int id);
+
+  //*BREEDING
+  Future insertBreeding(
+      {required int kits, required int breeder, required int mate});
+
+  Stream<List<BreedingModel>> watchBreeding(int id);
+
+  Future deleteBreeding(int id);
 }
 
 @LazySingleton(as: LocalDataSource)
@@ -283,6 +292,53 @@ class Local implements LocalDataSource {
   Future deleteFeeding(int id) async {
     try {
       await _db.feedingDao.deleteFeeding(id);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future insertBreeding(
+      {required int kits, required int breeder, required int mate}) async {
+    try {
+      await _db.breedingDao
+          .insertBreeding(kits: kits, breeder: breeder, mate: mate);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<BreedingModel>> watchBreeding(int id) async* {
+    yield* _db.breedingDao
+        .watchBreeding(id)
+        .map((event) => event
+            .map((e) => BreedingModel(
+                  id: e.breeding.id,
+                  kit: e.breeding.kit,
+                  date: e.breeding.date,
+                  breeder: e.breeding.breeder,
+                  mate: BreedersModel(
+                    id: e.breeders.id,
+                    name: e.breeders.name,
+                    weight: e.breeders.weight,
+                    gender: e.breeders.gender,
+                    age: e.breeders.age,
+                    image: e.breeders.image,
+                  ),
+                ))
+            .toList())
+        .onErrorReturnWith((error, stackTrace) {
+      throw DatabaseExeption();
+    });
+  }
+
+  @override
+  Future deleteBreeding(int id) async {
+    try {
+      await _db.breedingDao.deleteBreedin(id);
     } catch (e) {
       print(e);
       rethrow;

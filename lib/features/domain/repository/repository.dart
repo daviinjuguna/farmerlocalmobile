@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
+import 'package:farmerlocalmobile/features/domain/entities/breeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 
@@ -53,4 +54,14 @@ abstract class Repository {
     required Feeding feeding,
   });
   Future<Either<String, String>> deleteFeeding(int id);
+
+  //*BREEDING
+  Future<Either<String, String>> insertBreeding({
+    required int kits,
+    required int breeder,
+    required int mate,
+  });
+
+  Stream<Either<String, List<Breeding>>> watchBreeding(int id);
+  Future<Either<String, String>> deleteBreeding(int id);
 }

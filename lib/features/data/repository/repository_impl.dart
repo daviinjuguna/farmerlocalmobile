@@ -7,6 +7,7 @@ import 'package:farmerlocalmobile/features/data/datasource/store_image.dart';
 import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
 import 'package:farmerlocalmobile/features/data/models/feeding_model.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
+import 'package:farmerlocalmobile/features/domain/entities/breeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 import 'package:dartz/dartz.dart';
@@ -278,6 +279,52 @@ class Repo implements Repository {
       final _id = await _local.getStoredUser();
       if (_id == null) return left("Unauthenticated");
       await _local.deleteFeeding(id);
+      return right("Deleted");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Future<Either<String, String>> insertBreeding({
+    required int kits,
+    required int breeder,
+    required int mate,
+  }) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.insertBreeding(kits: kits, breeder: breeder, mate: mate);
+      return right("Added");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Stream<Either<String, List<Breeding>>> watchBreeding(int id) async* {
+    final _id = await _local.getStoredUser();
+    if (_id == null) throw UNAUTHENTICATED_FAILURE_MESSAGE;
+    yield* _local
+        .watchBreeding(id)
+        .map((event) => right<String, List<Breeding>>(event))
+        .onErrorReturnWith((e, s) {
+      print(e.toString() + "," + s.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    });
+  }
+
+  @override
+  Future<Either<String, String>> deleteBreeding(int id) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.deleteBreeding(id);
       return right("Deleted");
     } catch (e) {
       print(e.toString());
