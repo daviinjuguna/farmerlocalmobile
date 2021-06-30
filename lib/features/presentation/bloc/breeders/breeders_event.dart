@@ -83,9 +83,11 @@ class DeleteBreederEvent extends BreedersEvent {
 class UpdateBreederEvent extends BreedersEvent {
   final int id;
   final Breeders breeders;
+  final File? image;
   UpdateBreederEvent({
     required this.id,
     required this.breeders,
+    this.image,
   });
 
   @override
@@ -94,12 +96,14 @@ class UpdateBreederEvent extends BreedersEvent {
 
     return other is UpdateBreederEvent &&
         other.id == id &&
-        other.breeders == breeders;
+        other.breeders == breeders &&
+        other.image == image;
   }
 
   @override
-  int get hashCode => id.hashCode ^ breeders.hashCode;
+  int get hashCode => id.hashCode ^ breeders.hashCode ^ image.hashCode;
 
   @override
-  String toString() => 'UpdateBreederEvent(id: $id, breeders: $breeders)';
+  String toString() =>
+      'UpdateBreederEvent(id: $id, breeders: $breeders, image: $image)';
 }

@@ -62,7 +62,7 @@ class _CustomSwitchState extends State<CustomSwitch>
                 : widget.onChanged(false);
           },
           child: Container(
-            width: 100.0,
+            width: 130.0,
             height: 35.0,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),

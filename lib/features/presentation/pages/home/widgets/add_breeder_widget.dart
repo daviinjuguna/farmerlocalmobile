@@ -12,19 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AddBreederWidget extends StatefulWidget {
   const AddBreederWidget({
     Key? key,
-    this.farm,
-    this.weight,
-    this.gender,
-    this.age,
-    this.image,
     this.breeders,
   }) : super(key: key);
 
-  final String? farm;
-  final double? weight;
-  final bool? gender;
-  final int? age;
-  final String? image;
   final Breeders? breeders;
   @override
   _AddBreederWidgetState createState() => _AddBreederWidgetState();
@@ -41,15 +31,17 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
   double _weight = 0.0;
 
   File? _imageFile;
+  File? _editedImageFile;
   @override
   void initState() {
     super.initState();
-    _weight = widget.weight ?? 0.0;
-    _isMale = widget.gender ?? true;
-    _nameController = TextEditingController(text: widget.farm);
-    _ageController = TextEditingController(text: widget.age?.toString());
-    if (widget.image != null) {
-      _imageFile = File(widget.image!);
+    _weight = widget.breeders?.weight ?? 0.0;
+    _isMale = widget.breeders?.gender ?? true;
+    _nameController = TextEditingController(text: widget.breeders?.name);
+    _ageController =
+        TextEditingController(text: widget.breeders?.age.toString());
+    if (widget.breeders?.image != null) {
+      _imageFile = File(widget.breeders!.image!);
     }
   }
 
@@ -75,6 +67,9 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
             listener: (context, ImageState state) {
               if (state is ImageSuccess) {
                 _imageFile = File(state.image);
+                setState(() {
+                  _editedImageFile = File(state.image);
+                });
               }
             },
             bloc: _imageBloc,
@@ -97,7 +92,7 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "ADDING...",
+                            "Loading...",
                           ),
                           CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -134,7 +129,9 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text("Added Successfully")
+                          widget.breeders != null
+                              ? Text("Edited Successfully")
+                              : Text("Added Successfully")
                         ],
                       ),
                     ),
@@ -176,6 +173,10 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
         ],
         child: Scaffold(
           appBar: AppBar(
+            title: Text(
+              widget.breeders != null ? "EDIT" : "ADD",
+              style: TextStyle(color: Colors.white),
+            ),
             iconTheme: IconThemeData(color: Colors.white),
           ),
           body: ListView(
@@ -374,6 +375,21 @@ class _AddBreederWidgetState extends State<AddBreederWidget> {
                                   ),
                                 ),
                               );
+                            return;
+                          }
+                          if (widget.breeders != null) {
+                            _breedersBloc.add(
+                              UpdateBreederEvent(
+                                id: widget.breeders!.id,
+                                image: _editedImageFile,
+                                breeders: widget.breeders!.copyWith(
+                                  name: _nameController.text.trim(),
+                                  weight: _weight,
+                                  gender: _isMale,
+                                  age: int.parse(_ageController.text.trim()),
+                                ),
+                              ),
+                            );
                             return;
                           }
                           _breedersBloc.add(AddBreedersEvent(

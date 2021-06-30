@@ -1,4 +1,5 @@
 import 'package:farmerlocalmobile/core/errors/exeptions.dart';
+import 'package:flutter/material.dart';
 
 const USER_ID = 'USER';
 
@@ -50,4 +51,16 @@ String returnFailure(final exception) {
   } else {
     return SERVER_FAILURE_MESSAGE;
   }
+}
+
+Color getColor(Set<MaterialState> states) {
+  const Set<MaterialState> interactiveStates = <MaterialState>{
+    MaterialState.pressed,
+    MaterialState.hovered,
+    MaterialState.focused,
+  };
+  if (states.any(interactiveStates.contains)) {
+    return Colors.lightGreen;
+  }
+  return Colors.green;
 }

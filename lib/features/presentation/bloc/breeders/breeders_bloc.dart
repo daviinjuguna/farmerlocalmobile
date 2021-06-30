@@ -43,8 +43,11 @@ class BreedersBloc extends Bloc<BreedersEvent, BreedersState> {
     if (event is UpdateBreederEvent) {
       yield BreedersLoading();
       await Future.delayed(Duration(milliseconds: 1500));
-      final _res = await _update
-          .call(UpdateBreederParams(id: event.id, breeders: event.breeders));
+      final _res = await _update.call(UpdateBreederParams(
+        id: event.id,
+        breeders: event.breeders,
+        image: event.image,
+      ));
       yield _res.fold(
         (l) => BreedersError(message: l),
         (r) => BreedersSuccess(),

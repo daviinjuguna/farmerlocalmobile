@@ -6,6 +6,7 @@ import 'package:farmerlocalmobile/features/data/datasource/local.dart';
 import 'package:farmerlocalmobile/features/data/datasource/store_image.dart';
 import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
+import 'package:farmerlocalmobile/features/domain/entities/feeding.dart';
 import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:farmerlocalmobile/features/domain/repository/repository.dart';
@@ -114,6 +115,8 @@ class Repo implements Repository {
     }
   }
 
+  //*BREEDERS
+
   @override
   Future<Either<String, String>> addBreeder({
     required String name,
@@ -158,11 +161,19 @@ class Repo implements Repository {
   }
 
   @override
-  Future<Either<String, String>> updateBreeder(
-      {required int id, required Breeders breeders}) async {
+  Future<Either<String, String>> updateBreeder({
+    required int id,
+    required Breeders breeders,
+    required File? image,
+  }) async {
     try {
       final _id = await _local.getStoredUser();
       if (_id == null) return left("Unauthenticated");
+      String? _imagePath;
+      if (image != null) {
+        _imagePath = await _store.storeImage(image);
+      }
+
       await _local.updateBreeder(
           id: id,
           e: BreedersModel(
@@ -171,7 +182,7 @@ class Repo implements Repository {
             weight: breeders.weight,
             gender: breeders.gender,
             age: breeders.age,
-            image: breeders.image,
+            image: _imagePath ?? breeders.image,
           ),
           userId: _id);
 
@@ -195,5 +206,44 @@ class Repo implements Repository {
       final failure = returnFailure(e);
       return left(failure);
     }
+  }
+
+  //*FEEDING
+
+  @override
+  Future<Either<String, String>> insertFeeding({
+    required double dryMatter,
+    required double greenMatter,
+    required bool water,
+    required int breederId,
+  }) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      await _local.insertFeeding(
+          breederId: breederId,
+          dryMatter: dryMatter,
+          greenMatter: greenMatter,
+          water: water);
+      return right("ADDED");
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
+  Stream<Either<String, List<Feeding>>> watchFeeding(int breederId) async* {
+    final _id = await _local.getStoredUser();
+    if (_id == null) throw UNAUTHENTICATED_FAILURE_MESSAGE;
+    yield* _local
+        .watchFeeding(breederId)
+        .map((feeding) => right<String, List<Feeding>>(feeding))
+        .onErrorReturnWith((e, s) {
+      print(e.toString() + "," + s.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    });
   }
 }

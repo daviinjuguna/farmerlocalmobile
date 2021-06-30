@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "LOGGING IN...",
+                        "Signing in...",
                       ),
                       CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -293,31 +293,23 @@ class _LoginPageState extends State<LoginPage> {
                                           ));
                                         }
                                       },
-                                child: state is AuthLoading
-                                    ? Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation(
-                                              Colors.green),
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            'Sign In',
-                                            style: TextStyle(
-                                              color: Colors.lightGreenAccent,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward,
-                                            color: Colors.lightGreenAccent,
-                                          ),
-                                        ],
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Sign In',
+                                      style: TextStyle(
+                                        color: Colors.lightGreenAccent,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
                                       ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.lightGreenAccent,
+                                    ),
+                                  ],
+                                ),
                               );
                             },
                           ),

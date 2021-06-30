@@ -1,6 +1,7 @@
 import 'package:farmerlocalmobile/database/app_database.dart';
 import 'package:farmerlocalmobile/database/breeding/breeding_table.dart';
 import 'package:moor/moor.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'breeding_dao.g.dart';
 

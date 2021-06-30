@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+
 import 'package:farmerlocalmobile/core/utils/use_case.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
 import 'package:farmerlocalmobile/features/domain/repository/repository.dart';
-import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class UpdateBreeder extends UseCase<String, UpdateBreederParams> {
@@ -10,7 +13,8 @@ class UpdateBreeder extends UseCase<String, UpdateBreederParams> {
 
   @override
   Future<Either<String, String>> call(UpdateBreederParams p) {
-    return _repository.updateBreeder(id: p.id, breeders: p.breeders);
+    return _repository.updateBreeder(
+        id: p.id, breeders: p.breeders, image: p.image);
   }
 
   final Repository _repository;
@@ -19,9 +23,12 @@ class UpdateBreeder extends UseCase<String, UpdateBreederParams> {
 class UpdateBreederParams {
   final int id;
   final Breeders breeders;
+  final File? image;
+
   UpdateBreederParams({
     required this.id,
     required this.breeders,
+    this.image,
   });
 
   @override
@@ -30,12 +37,14 @@ class UpdateBreederParams {
 
     return other is UpdateBreederParams &&
         other.id == id &&
-        other.breeders == breeders;
+        other.breeders == breeders &&
+        other.image == image;
   }
 
   @override
-  int get hashCode => id.hashCode ^ breeders.hashCode;
+  int get hashCode => id.hashCode ^ breeders.hashCode ^ image.hashCode;
 
   @override
-  String toString() => 'UpdateBreederParams(id: $id, breeders: $breeders)';
+  String toString() =>
+      'UpdateBreederParams(id: $id, breeders: $breeders, image: $image)';
 }

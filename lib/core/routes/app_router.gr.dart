@@ -7,9 +7,10 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import '../../features/domain/entities/breeders.dart' as _i8;
+import '../../features/domain/entities/breeders.dart' as _i9;
 import '../../features/presentation/pages/auth/login_page.dart' as _i4;
 import '../../features/presentation/pages/auth/register_page.dart' as _i5;
+import '../../features/presentation/pages/details/detail_page.dart' as _i8;
 import '../../features/presentation/pages/home/home_page.dart' as _i6;
 import '../../features/presentation/pages/home/widgets/add_breeder_widget.dart'
     as _i7;
@@ -46,16 +47,15 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (data) {
           final args = data.argsAs<AddBreederWidgetArgs>(
               orElse: () => const AddBreederWidgetArgs());
-          return _i7.AddBreederWidget(
-              key: args.key,
-              farm: args.farm,
-              weight: args.weight,
-              gender: args.gender,
-              age: args.age,
-              image: args.image,
-              breeders: args.breeders);
+          return _i7.AddBreederWidget(key: args.key, breeders: args.breeders);
         },
-        fullscreenDialog: true)
+        fullscreenDialog: true),
+    DetailsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final args = data.argsAs<DetailsRouteArgs>();
+          return _i8.DetailsPage(key: args.key, breeders: args.breeders);
+        })
   };
 
   @override
@@ -64,7 +64,8 @@ class AppRouter extends _i1.RootStackRouter {
         _i1.RouteConfig(LoginRoute.name, path: '/login-page'),
         _i1.RouteConfig(RegisterRoute.name, path: '/register-page'),
         _i1.RouteConfig(HomeRoute.name, path: '/home-page'),
-        _i1.RouteConfig(AddBreederWidget.name, path: '/add-breeder-widget')
+        _i1.RouteConfig(AddBreederWidget.name, path: '/add-breeder-widget'),
+        _i1.RouteConfig(DetailsRoute.name, path: '/details-page')
       ];
 }
 
@@ -93,49 +94,35 @@ class HomeRoute extends _i1.PageRouteInfo {
 }
 
 class AddBreederWidget extends _i1.PageRouteInfo<AddBreederWidgetArgs> {
-  AddBreederWidget(
-      {_i2.Key? key,
-      String? farm,
-      double? weight,
-      bool? gender,
-      int? age,
-      String? image,
-      _i8.Breeders? breeders})
+  AddBreederWidget({_i2.Key? key, _i9.Breeders? breeders})
       : super(name,
             path: '/add-breeder-widget',
-            args: AddBreederWidgetArgs(
-                key: key,
-                farm: farm,
-                weight: weight,
-                gender: gender,
-                age: age,
-                image: image,
-                breeders: breeders));
+            args: AddBreederWidgetArgs(key: key, breeders: breeders));
 
   static const String name = 'AddBreederWidget';
 }
 
 class AddBreederWidgetArgs {
-  const AddBreederWidgetArgs(
-      {this.key,
-      this.farm,
-      this.weight,
-      this.gender,
-      this.age,
-      this.image,
-      this.breeders});
+  const AddBreederWidgetArgs({this.key, this.breeders});
 
   final _i2.Key? key;
 
-  final String? farm;
+  final _i9.Breeders? breeders;
+}
 
-  final double? weight;
+class DetailsRoute extends _i1.PageRouteInfo<DetailsRouteArgs> {
+  DetailsRoute({_i2.Key? key, required _i9.Breeders breeders})
+      : super(name,
+            path: '/details-page',
+            args: DetailsRouteArgs(key: key, breeders: breeders));
 
-  final bool? gender;
+  static const String name = 'DetailsRoute';
+}
 
-  final int? age;
+class DetailsRouteArgs {
+  const DetailsRouteArgs({this.key, required this.breeders});
 
-  final String? image;
+  final _i2.Key? key;
 
-  final _i8.Breeders? breeders;
+  final _i9.Breeders breeders;
 }

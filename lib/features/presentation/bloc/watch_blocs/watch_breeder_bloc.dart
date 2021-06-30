@@ -9,9 +9,7 @@ import 'package:farmerlocalmobile/core/utils/use_case.dart';
 import 'package:farmerlocalmobile/features/domain/entities/breeders.dart';
 import 'package:farmerlocalmobile/features/domain/usecase/watch_breeder.dart';
 
-abstract class BlocBase {
-  void close();
-}
+import 'bloc_base.dart';
 
 @injectable
 class WatchBreederBloc extends BlocBase {
@@ -58,9 +56,7 @@ class BreedersResponse {
     this.error,
   });
 
-  BreedersResponse.withError(String error)
-      : breeders = [],
-        error = error;
+  BreedersResponse.withError(this.error) : breeders = [];
 
   @override
   bool operator ==(Object other) {

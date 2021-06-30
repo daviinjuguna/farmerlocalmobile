@@ -2,6 +2,7 @@ import 'package:farmerlocalmobile/core/errors/exeptions.dart';
 import 'package:farmerlocalmobile/core/utils/constants.dart';
 import 'package:farmerlocalmobile/database/app_database.dart';
 import 'package:farmerlocalmobile/features/data/models/breeders_model.dart';
+import 'package:farmerlocalmobile/features/data/models/feeding_model.dart';
 import 'package:farmerlocalmobile/features/data/models/user_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,7 @@ abstract class LocalDataSource {
     required String? image,
   });
 
+  //*BREEDERS ANIMALS
   Stream<List<BreedersModel>> watchBreeders(int userId);
   Future updateBreeder({
     required int id,
@@ -41,6 +43,15 @@ abstract class LocalDataSource {
     required int userId,
   });
   Future deleteBreeder(int id);
+
+  //*FEEDING
+  Future insertFeeding({
+    required int breederId,
+    required double dryMatter,
+    required double greenMatter,
+    required bool water,
+  });
+  Stream<List<FeedingModel>> watchFeeding(int breederId);
 }
 
 @LazySingleton(as: LocalDataSource)
@@ -200,5 +211,42 @@ class Local implements LocalDataSource {
       print(e);
       rethrow;
     }
+  }
+
+  @override
+  Future insertFeeding(
+      {required int breederId,
+      required double dryMatter,
+      required double greenMatter,
+      required bool water}) async {
+    try {
+      await _db.feedingDao.insertFeeding(
+        breederId: breederId,
+        dryMatter: dryMatter,
+        greenMatter: greenMatter,
+        water: water,
+      );
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<FeedingModel>> watchFeeding(int breederId) async* {
+    yield* _db.feedingDao
+        .watchFeeding(breederId)
+        .map((event) => event
+            .map((e) => FeedingModel(
+                  id: e.id,
+                  dryMatter: e.dryMatter,
+                  greenMatter: e.greenMatter,
+                  water: e.water,
+                  date: e.date,
+                ))
+            .toList())
+        .onErrorReturnWith((error, stackTrace) {
+      throw DatabaseExeption();
+    });
   }
 }

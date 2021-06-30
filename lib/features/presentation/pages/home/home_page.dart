@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:farmerlocalmobile/core/routes/app_router.gr.dart';
 import 'package:farmerlocalmobile/di/injection.dart';
+import 'package:farmerlocalmobile/features/presentation/bloc/breeders/breeders_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/user/user_bloc.dart';
-import 'package:farmerlocalmobile/features/presentation/bloc/watch_breeder/watch_breeder_bloc.dart';
+import 'package:farmerlocalmobile/features/presentation/bloc/watch_blocs/watch_breeder_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final _userBloc = getIt<UserBloc>();
   late final _watch = getIt<WatchBreederBloc>();
+  late final _breedersBloc = getIt<BreedersBloc>();
+
   // late final
   String _name = "";
   @override
@@ -39,9 +42,100 @@ class _HomePageState extends State<HomePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (create) => _userBloc),
+        BlocProvider(create: (create) => _breedersBloc)
       ],
       child: MultiBlocListener(
         listeners: [
+          BlocListener<BreedersBloc, BreedersState>(
+            listener: (context, state) {
+              if (state is BreedersLoading) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.blue,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Loading...",
+                          ),
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+              }
+              if (state is BreedersSuccess) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "SUCCESS",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text("Deleted Successfully")
+                        ],
+                      ),
+                    ),
+                  );
+              }
+              if (state is BreedersError) {
+                ScaffoldMessenger.maybeOf(context)
+                  ?..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.fixed,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      )),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "ERROR",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          // SizedBox(height: 3),
+                          Text(state.message)
+                        ],
+                      ),
+                    ),
+                  );
+              }
+            },
+          ),
           BlocListener(
             listener: (context, UserState state) {
               if (state is UserLoading) {
@@ -66,7 +160,14 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          drawer: Drawer(),
+          drawer: Drawer(
+            child: Container(
+              color: Colors.green,
+              child: SafeArea(
+                child: Column(),
+              ),
+            ),
+          ),
           body: Provider<WatchBreederBloc>(
             create: (_) => _watch,
             child: Container(
@@ -79,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                       return Text("Error Msee");
                     }
                     if (snapshot.data!.breeders.isEmpty) {
-                      return Container();
+                      return Center(child: Text("EMPTY LIST"));
                     }
                     return ListView.separated(
                       separatorBuilder: (c, i) => Divider(),
@@ -87,7 +188,8 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         final _breeder = snapshot.data!.breeders[index];
                         return ListTile(
-                          onTap: () {},
+                          onTap: () => AutoRouter.of(context)
+                              .push(DetailsRoute(breeders: _breeder)),
                           onLongPress: () => showDialog(
                             context: context,
                             builder: (builder) => AlertDialog(
@@ -123,6 +225,8 @@ class _HomePageState extends State<HomePage> {
                           ).then((value) {
                             if (value != null && value) {
                               //!DELETE HERE
+                              _breedersBloc
+                                  .add(DeleteBreederEvent(id: _breeder.id));
                             } else {
                               print("SOMETIMES YOU GOTTA LOSE SOMEBODY");
                             }
@@ -148,7 +252,10 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           trailing: IconButton(
-                            onPressed: () {},
+                            onPressed: () =>
+                                AutoRouter.of(context).push(AddBreederWidget(
+                              breeders: _breeder,
+                            )),
                             icon: Icon(Icons.edit),
                           ),
                         );

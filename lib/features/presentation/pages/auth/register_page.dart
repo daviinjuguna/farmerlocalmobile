@@ -124,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "REGISTERING...",
+                        "Signing up...",
                       ),
                       CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -393,31 +393,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                           ));
                                         }
                                       },
-                                child: state is AuthLoading
-                                    ? Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation(
-                                              Colors.green),
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            'Sign Up',
-                                            style: TextStyle(
-                                              color: Colors.lightGreenAccent,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward,
-                                            color: Colors.lightGreenAccent,
-                                          ),
-                                        ],
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        color: Colors.lightGreenAccent,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
                                       ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.lightGreenAccent,
+                                    ),
+                                  ],
+                                ),
                               );
                             },
                           ),
