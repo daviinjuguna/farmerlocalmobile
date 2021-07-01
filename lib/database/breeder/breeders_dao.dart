@@ -60,4 +60,15 @@ class BreedersDao extends DatabaseAccessor<AppDatabase>
         print("ERROE EDIT BREEDER: $error,$stackTrace");
         throw DatabaseExeption();
       });
+
+  Future<List<BreedersDataClass>> getOppGender(
+          {required int userId, required bool gender}) =>
+      (select(breeders)
+            ..where((tbl) => tbl.user.equals(userId))
+            ..where((tbl) => tbl.gender.equals(!gender)))
+          .get()
+          .onError((error, stackTrace) {
+        print("ERROE GWT OPP GENDER BREEDER: $error,$stackTrace");
+        throw DatabaseExeption();
+      });
 }

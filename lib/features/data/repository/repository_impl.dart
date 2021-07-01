@@ -163,6 +163,19 @@ class Repo implements Repository {
   }
 
   @override
+  Future<Either<String, List<Breeders>>> getOppGender(bool gender) async {
+    try {
+      final _id = await _local.getStoredUser();
+      if (_id == null) return left("Unauthenticated");
+      return right(await _local.getOppGender(userId: _id, gender: gender));
+    } catch (e) {
+      print(e.toString());
+      final failure = returnFailure(e);
+      return left(failure);
+    }
+  }
+
+  @override
   Future<Either<String, String>> updateBreeder({
     required int id,
     required Breeders breeders,

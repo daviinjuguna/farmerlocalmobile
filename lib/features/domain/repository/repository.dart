@@ -34,6 +34,8 @@ abstract class Repository {
     required File image,
   });
   Stream<Either<String, List<Breeders>>> watchBreeder();
+  Future<Either<String, List<Breeders>>> getOppGender(bool gender);
+
   Future<Either<String, String>> updateBreeder({
     required int id,
     required Breeders breeders,

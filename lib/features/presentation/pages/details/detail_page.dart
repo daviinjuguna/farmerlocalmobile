@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import 'components/add_breeding_widget.dart';
 import 'components/add_feeding_dialog.dart';
 import 'components/add_feeding_object.dart';
 import 'widgets/breeding_widget.dart';
@@ -335,7 +336,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                 .then((value) {
                               if (value != null) {
                                 _feedingBloc.add(UpdateFeedingEvent(
-                                    id: feeding.id, feeding: feeding));
+                                    id: feeding.id,
+                                    feeding: feeding.copyWith(
+                                      dryMatter: value.dryMatter,
+                                      water: value.water,
+                                      greenMatter: value.greenMatter,
+                                    )));
                               } else {
                                 print("NTAKUFINYA");
                               }
@@ -368,6 +374,55 @@ class _DetailsPageState extends State<DetailsPage> {
                             }
                             return BreedingWidget(
                               breeding: snapshot.data!.breeding,
+                              addBreeding: () => showDialog(
+                                context: context,
+                                builder: (builder) => AddBreedingWidget(
+                                  gender: widget.breeders.gender,
+                                ),
+                              ).then((value) => null),
+                              deleteBreeding: (breeding) => showDialog<bool?>(
+                                context: context,
+                                builder: (builder) => AlertDialog(
+                                  title: Text("DELETE"),
+                                  content:
+                                      Text("Are you sure you want to delete?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(null),
+                                      child: Text(
+                                        "CANCEL",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 1.4,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: Text(
+                                        "DELETE",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 1.4,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ).then((value) {
+                                if (value != null && value) {
+                                  _breedingBloc.add(
+                                      DeleteBreedingEvent(id: breeding.id));
+                                } else {
+                                  print("NTAKUFINYA");
+                                }
+                              }).catchError((e, s) {
+                                print("ERROR DELETE: $e,$s");
+                              }),
                             );
                           } else if (snapshot.hasError) {
                             return Text("Error Msee");

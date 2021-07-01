@@ -59,7 +59,7 @@ class FeedingWidget extends StatelessWidget {
                         .map(
                           (e) => DataRow(
                             cells: [
-                              DataCell(Text(parseDate(
+                              DataCell(Text(parseUniqueDate(
                                   e.date.millisecondsSinceEpoch ~/ 1000))),
                               DataCell(Text("${e.dryMatter}")),
                               DataCell(Text("${e.greenMatter}")),

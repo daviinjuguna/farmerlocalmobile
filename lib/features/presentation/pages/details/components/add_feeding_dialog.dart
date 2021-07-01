@@ -15,17 +15,17 @@ class AddFeedingDialog extends StatefulWidget {
 class _AddFeedingDialogState extends State<AddFeedingDialog> {
   TextEditingController _dryMatter = TextEditingController();
   TextEditingController _greenMatter = TextEditingController();
+  bool _isWater = false;
+
   @override
   void initState() {
     super.initState();
     _isWater = widget.feeding?.water ?? false;
     _dryMatter = TextEditingController(
-        text: widget.feeding?.dryMatter.toStringAsFixed(2));
+        text: widget.feeding?.dryMatter.toStringAsFixed(1));
     _greenMatter = TextEditingController(
-        text: widget.feeding?.greenMatter.toStringAsFixed(2));
+        text: widget.feeding?.greenMatter.toStringAsFixed(1));
   }
-
-  bool _isWater = false;
 
   @override
   void dispose() {

@@ -10,6 +10,34 @@ abstract class StreamUseCase<Type, Params> {
 
 class NoParams {}
 
+class ParamsBool {
+  final bool boolValue;
+  ParamsBool({
+    required this.boolValue,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ParamsBool && other.boolValue == boolValue;
+  }
+
+  @override
+  int get hashCode => boolValue.hashCode;
+
+  ParamsBool copyWith({
+    bool? boolValue,
+  }) {
+    return ParamsBool(
+      boolValue: boolValue ?? this.boolValue,
+    );
+  }
+
+  @override
+  String toString() => 'ParamsBool(boolValue: $boolValue)';
+}
+
 class ParamsId {
   final int id;
 

@@ -44,6 +44,8 @@ abstract class LocalDataSource {
     required int userId,
   });
   Future deleteBreeder(int id);
+  Future<List<BreedersModel>> getOppGender(
+      {required int userId, required bool gender});
 
   //*FEEDING
   Future insertFeeding({
@@ -213,6 +215,28 @@ class Local implements LocalDataSource {
             image: e.image!,
             user: userId,
           ));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<BreedersModel>> getOppGender(
+      {required int userId, required bool gender}) async {
+    try {
+      final _data =
+          await _db.breedersDao.getOppGender(userId: userId, gender: gender);
+      return _data
+          .map((e) => BreedersModel(
+                id: e.id,
+                name: e.name,
+                weight: e.weight,
+                gender: e.gender,
+                age: e.age,
+                image: e.image,
+              ))
+          .toList();
     } catch (e) {
       print(e);
       rethrow;
