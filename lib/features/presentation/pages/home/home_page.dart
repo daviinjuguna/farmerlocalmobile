@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:farmerlocalmobile/core/routes/app_router.gr.dart';
 import 'package:farmerlocalmobile/di/injection.dart';
+import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/breeders/breeders_bloc.dart';
+import 'package:farmerlocalmobile/features/presentation/bloc/splash/splash_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/user/user_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/watch_blocs/watch_breeder_bloc.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   late final _userBloc = getIt<UserBloc>();
   late final _watch = getIt<WatchBreederBloc>();
   late final _breedersBloc = getIt<BreedersBloc>();
+  late final _splashBloc = getIt<SplashBloc>();
 
   // late final
   String _name = "";
@@ -35,6 +38,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     _userBloc.close();
     _watch.close();
+    _splashBloc.close();
+    _breedersBloc.close();
   }
 
   @override
@@ -42,10 +47,21 @@ class _HomePageState extends State<HomePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (create) => _userBloc),
-        BlocProvider(create: (create) => _breedersBloc)
+        BlocProvider(create: (create) => _breedersBloc),
+        BlocProvider(create: (create) => _splashBloc),
       ],
       child: MultiBlocListener(
         listeners: [
+          BlocListener(
+            listener: (c, SplashState state) {
+              if (state is SplashLoggedOut) {
+                WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                  AutoRouter.of(context).replace(LoginRoute());
+                });
+              }
+            },
+            bloc: _splashBloc,
+          ),
           BlocListener<BreedersBloc, BreedersState>(
             listener: (context, state) {
               if (state is BreedersLoading) {
@@ -142,7 +158,9 @@ class _HomePageState extends State<HomePage> {
                 _name = "loading";
               }
               if (state is UserSuccess) {
-                _name = state.user.name;
+                setState(() {
+                  _name = state.user.name;
+                });
               }
             },
             bloc: _userBloc,
@@ -164,7 +182,83 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               color: Colors.green,
               child: SafeArea(
-                child: Column(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: AssetImage(
+                        "assets/rabbids.jpg",
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "${_name.toUpperCase()}",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(height: 5),
+                    BlocBuilder<SplashBloc, SplashState>(
+                      builder: (context, state) {
+                        return MaterialButton(
+                          onPressed: () {
+                            if (state is SplashLoading) {
+                              print("JAMAA TULIA BANNA");
+                              return;
+                            }
+                            showDialog<bool?>(
+                              context: context,
+                              builder: (builder) => AlertDialog(
+                                title: Text("LOGOUT"),
+                                content:
+                                    Text("Are you sure you want to logout?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(null),
+                                    child: Text(
+                                      "CANCEL",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.4,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: Text(
+                                      "LOGOUT",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.4,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).then((value) {
+                              if (value != null && value) {
+                                _splashBloc.add(LogoutEvent());
+                              }
+                            }).catchError((e, s) {
+                              print("LOGOUT ERROR: ,");
+                            });
+                          },
+                          color: Colors.white,
+                          child: Text(
+                            state is SplashLoading ? "LOGGING OUT" : "LOGOUT",
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
           ),

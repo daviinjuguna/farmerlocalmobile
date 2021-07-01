@@ -100,7 +100,8 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
   gh.lazySingleton<_i29.Logout>(() => _i29.Logout(get<_i9.Repository>()));
   gh.lazySingleton<_i30.PickImage>(() => _i30.PickImage(get<_i9.Repository>()));
   gh.lazySingleton<_i31.Register>(() => _i31.Register(get<_i9.Repository>()));
-  gh.factory<_i32.SplashBloc>(() => _i32.SplashBloc(get<_i20.CheckAuth>()));
+  gh.factory<_i32.SplashBloc>(
+      () => _i32.SplashBloc(get<_i20.CheckAuth>(), get<_i29.Logout>()));
   gh.factory<_i33.UserBloc>(() => _i33.UserBloc(get<_i25.GetUser>()));
   gh.factory<_i34.AuthBloc>(
       () => _i34.AuthBloc(get<_i28.Login>(), get<_i31.Register>()));

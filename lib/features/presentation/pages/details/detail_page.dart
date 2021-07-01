@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import 'components/add_breeding_object.dart';
 import 'components/add_breeding_widget.dart';
 import 'components/add_feeding_dialog.dart';
 import 'components/add_feeding_object.dart';
@@ -374,12 +375,24 @@ class _DetailsPageState extends State<DetailsPage> {
                             }
                             return BreedingWidget(
                               breeding: snapshot.data!.breeding,
-                              addBreeding: () => showDialog(
+                              addBreeding: () => showDialog<AddBreedingObject?>(
                                 context: context,
                                 builder: (builder) => AddBreedingWidget(
                                   gender: widget.breeders.gender,
                                 ),
-                              ).then((value) => null),
+                              ).then((value) {
+                                if (value != null) {
+                                  _breedingBloc.add(AddBreedingEvent(
+                                    kits: value.kits,
+                                    breeder: widget.breeders.id,
+                                    mate: value.mateId,
+                                  ));
+                                  return;
+                                }
+                                print("HAKUNA LA");
+                              }).catchError((e, s) {
+                                print("ERROR ADD BREED: $e,$s");
+                              }),
                               deleteBreeding: (breeding) => showDialog<bool?>(
                                 context: context,
                                 builder: (builder) => AlertDialog(
