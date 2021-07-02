@@ -1,6 +1,6 @@
 # farmerlocalmobile
 
-A new Flutter project.
+Local Project, Just Pull, Pub Get and Pub Run
 
 ## Getting Started
 
