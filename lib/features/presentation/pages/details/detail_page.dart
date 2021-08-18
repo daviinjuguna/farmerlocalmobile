@@ -259,105 +259,101 @@ class _DetailsPageState extends State<DetailsPage> {
             body: TabBarView(
               physics: NeverScrollableScrollPhysics(),
               children: [
-                Provider<WatchFeedingBloc>(
-                  create: (_) => _watchFeeding,
-                  child: Container(
-                    child: StreamBuilder<FeedingResponse>(
-                      stream: _watchFeeding.subJect.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data!.error != null &&
-                              snapshot.data!.error!.length > 0) {
-                            return Text("Error Msee");
-                          }
-                          return FeedingWidget(
-                            feeding: snapshot.data!.feeding,
-                            addFeeding: () => showDialog<AddFeedingObject?>(
-                              context: context,
-                              builder: (builder) => AddFeedingDialog(),
-                            ).then((value) {
-                              if (value != null) {
-                                _feedingBloc.add(InsertFeedingEvent(
-                                  breederId: widget.breeders.id,
-                                  dryMatter: value.dryMatter,
-                                  greenMatter: value.greenMatter,
-                                  water: value.water,
-                                ));
-                              }
-                            }).catchError((e, s) {
-                              print("ADD FEEDING ERROR: $e,$s");
-                            }),
-                            delete: (feeding) => showDialog<bool?>(
-                              context: context,
-                              builder: (builder) => AlertDialog(
-                                title: Text("DELETE"),
-                                content:
-                                    Text("Are you sure you want to delete?"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(null),
-                                    child: Text(
-                                      "CANCEL",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 1.4,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: Text(
-                                      "DELETE",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 1.4,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ).then((value) {
-                              if (value != null && value) {
-                                _feedingBloc
-                                    .add(DeleteFeedingEvent(id: feeding.id));
-                              } else {
-                                print("NTAKUFINYA");
-                              }
-                            }).catchError((e, s) {
-                              print("ERROR DELETE: $e,$s");
-                            }),
-                            edit: (feeding) => showDialog<AddFeedingObject?>(
-                                    context: context,
-                                    builder: (builder) =>
-                                        AddFeedingDialog(feeding: feeding))
-                                .then((value) {
-                              if (value != null) {
-                                _feedingBloc.add(UpdateFeedingEvent(
-                                    id: feeding.id,
-                                    feeding: feeding.copyWith(
-                                      dryMatter: value.dryMatter,
-                                      water: value.water,
-                                      greenMatter: value.greenMatter,
-                                    )));
-                              } else {
-                                print("NTAKUFINYA");
-                              }
-                            }).catchError((e, s) {
-                              print("ERROR EDIT: $e,$s");
-                            }),
-                          );
-                        } else if (snapshot.hasError) {
+                Container(
+                  child: StreamBuilder<FeedingResponse>(
+                    stream: _watchFeeding.subJect.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.error != null &&
+                            snapshot.data!.error!.length > 0) {
                           return Text("Error Msee");
                         }
-                        return Center(
-                          child: CircularProgressIndicator(),
+                        return FeedingWidget(
+                          feeding: snapshot.data!.feeding,
+                          addFeeding: () => showDialog<AddFeedingObject?>(
+                            context: context,
+                            builder: (builder) => AddFeedingDialog(),
+                          ).then((value) {
+                            if (value != null) {
+                              _feedingBloc.add(InsertFeedingEvent(
+                                breederId: widget.breeders.id,
+                                dryMatter: value.dryMatter,
+                                greenMatter: value.greenMatter,
+                                water: value.water,
+                              ));
+                            }
+                          }).catchError((e, s) {
+                            print("ADD FEEDING ERROR: $e,$s");
+                          }),
+                          delete: (feeding) => showDialog<bool?>(
+                            context: context,
+                            builder: (builder) => AlertDialog(
+                              title: Text("DELETE"),
+                              content: Text("Are you sure you want to delete?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(null),
+                                  child: Text(
+                                    "CANCEL",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.4,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: Text(
+                                    "DELETE",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.4,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ).then((value) {
+                            if (value != null && value) {
+                              _feedingBloc
+                                  .add(DeleteFeedingEvent(id: feeding.id));
+                            } else {
+                              print("NTAKUFINYA");
+                            }
+                          }).catchError((e, s) {
+                            print("ERROR DELETE: $e,$s");
+                          }),
+                          edit: (feeding) => showDialog<AddFeedingObject?>(
+                                  context: context,
+                                  builder: (builder) =>
+                                      AddFeedingDialog(feeding: feeding))
+                              .then((value) {
+                            if (value != null) {
+                              _feedingBloc.add(UpdateFeedingEvent(
+                                  id: feeding.id,
+                                  feeding: feeding.copyWith(
+                                    dryMatter: value.dryMatter,
+                                    water: value.water,
+                                    greenMatter: value.greenMatter,
+                                  )));
+                            } else {
+                              print("NTAKUFINYA");
+                            }
+                          }).catchError((e, s) {
+                            print("ERROR EDIT: $e,$s");
+                          }),
                         );
-                      },
-                    ),
+                      } else if (snapshot.hasError) {
+                        return Text("Error Msee");
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ),
 

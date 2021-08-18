@@ -216,62 +216,35 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserDataClass> {
   final String? _alias;
   $UsersTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedTextColumn name = _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _emailMeta = const VerificationMeta('email');
-  @override
-  late final GeneratedTextColumn email = _constructEmail();
-  GeneratedTextColumn _constructEmail() {
-    return GeneratedTextColumn('email', $tableName, false,
-        $customConstraints: 'UNIQUE');
-  }
-
+  late final GeneratedColumn<String?> email = GeneratedColumn<String?>(
+      'email', aliasedName, false,
+      typeName: 'TEXT',
+      requiredDuringInsert: true,
+      $customConstraints: 'UNIQUE');
   final VerificationMeta _passwordMeta = const VerificationMeta('password');
-  @override
-  late final GeneratedTextColumn password = _constructPassword();
-  GeneratedTextColumn _constructPassword() {
-    return GeneratedTextColumn(
-      'password',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> password = GeneratedColumn<String?>(
+      'password', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  @override
-  late final GeneratedDateTimeColumn createdAt = _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
-      'created_at',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> createdAt = GeneratedColumn<DateTime?>(
+      'created_at', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name, email, password, createdAt];
   @override
-  $UsersTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'users';
   @override
-  String get $tableName => _alias ?? 'users';
-  @override
-  final String actualTableName = 'users';
+  String get actualTableName => 'users';
   @override
   VerificationContext validateIntegrity(Insertable<UserDataClass> instance,
       {bool isInserting = false}) {
@@ -583,82 +556,48 @@ class $BreedersTable extends Breeders
   final String? _alias;
   $BreedersTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedTextColumn name = _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _weightMeta = const VerificationMeta('weight');
-  @override
-  late final GeneratedRealColumn weight = _constructWeight();
-  GeneratedRealColumn _constructWeight() {
-    return GeneratedRealColumn(
-      'weight',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<double?> weight = GeneratedColumn<double?>(
+      'weight', aliasedName, false,
+      typeName: 'REAL', requiredDuringInsert: true);
   final VerificationMeta _genderMeta = const VerificationMeta('gender');
-  @override
-  late final GeneratedBoolColumn gender = _constructGender();
-  GeneratedBoolColumn _constructGender() {
-    return GeneratedBoolColumn(
-      'gender',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<bool?> gender = GeneratedColumn<bool?>(
+      'gender', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      defaultConstraints: 'CHECK (gender IN (0, 1))');
   final VerificationMeta _ageMeta = const VerificationMeta('age');
-  @override
-  late final GeneratedIntColumn age = _constructAge();
-  GeneratedIntColumn _constructAge() {
-    return GeneratedIntColumn(
-      'age',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> age = GeneratedColumn<int?>(
+      'age', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _imageMeta = const VerificationMeta('image');
-  @override
-  late final GeneratedTextColumn image = _constructImage();
-  GeneratedTextColumn _constructImage() {
-    return GeneratedTextColumn('image', $tableName, false,
-        defaultValue: const Constant(""));
-  }
-
+  late final GeneratedColumn<String?> image = GeneratedColumn<String?>(
+      'image', aliasedName, false,
+      typeName: 'TEXT',
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   final VerificationMeta _userMeta = const VerificationMeta('user');
-  @override
-  late final GeneratedIntColumn user = _constructUser();
-  GeneratedIntColumn _constructUser() {
-    return GeneratedIntColumn('user', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES users (id) ON DELETE CASCADE');
-  }
-
+  late final GeneratedColumn<int?> user = GeneratedColumn<int?>(
+      'user', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL REFERENCES users (id) ON DELETE CASCADE');
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, weight, gender, age, image, user];
   @override
-  $BreedersTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'breeders';
   @override
-  String get $tableName => _alias ?? 'breeders';
-  @override
-  final String actualTableName = 'breeders';
+  String get actualTableName => 'breeders';
   @override
   VerificationContext validateIntegrity(Insertable<BreedersDataClass> instance,
       {bool isInserting = false}) {
@@ -953,76 +892,44 @@ class $FeedingTable extends Feeding
   final String? _alias;
   $FeedingTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _dryMatterMeta = const VerificationMeta('dryMatter');
-  @override
-  late final GeneratedRealColumn dryMatter = _constructDryMatter();
-  GeneratedRealColumn _constructDryMatter() {
-    return GeneratedRealColumn(
-      'dry_matter',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<double?> dryMatter = GeneratedColumn<double?>(
+      'dry_matter', aliasedName, false,
+      typeName: 'REAL', requiredDuringInsert: true);
   final VerificationMeta _greenMatterMeta =
       const VerificationMeta('greenMatter');
-  @override
-  late final GeneratedRealColumn greenMatter = _constructGreenMatter();
-  GeneratedRealColumn _constructGreenMatter() {
-    return GeneratedRealColumn(
-      'green_matter',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<double?> greenMatter = GeneratedColumn<double?>(
+      'green_matter', aliasedName, false,
+      typeName: 'REAL', requiredDuringInsert: true);
   final VerificationMeta _waterMeta = const VerificationMeta('water');
-  @override
-  late final GeneratedBoolColumn water = _constructWater();
-  GeneratedBoolColumn _constructWater() {
-    return GeneratedBoolColumn(
-      'water',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<bool?> water = GeneratedColumn<bool?>(
+      'water', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      defaultConstraints: 'CHECK (water IN (0, 1))');
   final VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedDateTimeColumn date = _constructDate();
-  GeneratedDateTimeColumn _constructDate() {
-    return GeneratedDateTimeColumn(
-      'date',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> date = GeneratedColumn<DateTime?>(
+      'date', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _breederMeta = const VerificationMeta('breeder');
-  @override
-  late final GeneratedIntColumn breeder = _constructBreeder();
-  GeneratedIntColumn _constructBreeder() {
-    return GeneratedIntColumn('breeder', $tableName, false,
-        $customConstraints:
-            'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
-  }
-
+  late final GeneratedColumn<int?> breeder = GeneratedColumn<int?>(
+      'breeder', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints:
+          'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
   @override
   List<GeneratedColumn> get $columns =>
       [id, dryMatter, greenMatter, water, date, breeder];
   @override
-  $FeedingTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'feeding';
   @override
-  String get $tableName => _alias ?? 'feeding';
-  @override
-  final String actualTableName = 'feeding';
+  String get actualTableName => 'feeding';
   @override
   VerificationContext validateIntegrity(Insertable<FeedingDataClass> instance,
       {bool isInserting = false}) {
@@ -1285,60 +1192,38 @@ class $BreedingTable extends Breeding
   final String? _alias;
   $BreedingTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _kitMeta = const VerificationMeta('kit');
-  @override
-  late final GeneratedIntColumn kit = _constructKit();
-  GeneratedIntColumn _constructKit() {
-    return GeneratedIntColumn(
-      'kit',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> kit = GeneratedColumn<int?>(
+      'kit', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedDateTimeColumn date = _constructDate();
-  GeneratedDateTimeColumn _constructDate() {
-    return GeneratedDateTimeColumn(
-      'date',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> date = GeneratedColumn<DateTime?>(
+      'date', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _breederMeta = const VerificationMeta('breeder');
-  @override
-  late final GeneratedIntColumn breeder = _constructBreeder();
-  GeneratedIntColumn _constructBreeder() {
-    return GeneratedIntColumn('breeder', $tableName, false,
-        $customConstraints:
-            'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
-  }
-
+  late final GeneratedColumn<int?> breeder = GeneratedColumn<int?>(
+      'breeder', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints:
+          'NOT NULL REFERENCES breeders (id) ON DELETE CASCADE');
   final VerificationMeta _mateMeta = const VerificationMeta('mate');
-  @override
-  late final GeneratedIntColumn mate = _constructMate();
-  GeneratedIntColumn _constructMate() {
-    return GeneratedIntColumn('mate', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES breeders (id)');
-  }
-
+  late final GeneratedColumn<int?> mate = GeneratedColumn<int?>(
+      'mate', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL REFERENCES breeders (id)');
   @override
   List<GeneratedColumn> get $columns => [id, kit, date, breeder, mate];
   @override
-  $BreedingTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'breeding';
   @override
-  String get $tableName => _alias ?? 'breeding';
-  @override
-  final String actualTableName = 'breeding';
+  String get actualTableName => 'breeding';
   @override
   VerificationContext validateIntegrity(Insertable<BreedingDataClass> instance,
       {bool isInserting = false}) {

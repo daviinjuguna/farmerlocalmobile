@@ -15,13 +15,22 @@ class BreedingDao extends DatabaseAccessor<AppDatabase>
 
   Future insertBreeding(
           {required int kits, required int breeder, required int mate}) =>
-      into(breeding)
-          .insert(BreedingCompanion.insert(
-              kit: kits, date: DateTime.now(), breeder: breeder, mate: mate))
-          .onError((error, stackTrace) {
-        print("ERROR INSERT BREEDING: $error,$stackTrace");
-        throw DatabaseExeption();
-      });
+      Future.wait([
+        into(breeding)
+            .insert(BreedingCompanion.insert(
+                kit: kits, date: DateTime.now(), breeder: breeder, mate: mate))
+            .onError((error, stackTrace) {
+          print("ERROR INSERT BREEDING: $error,$stackTrace");
+          throw DatabaseExeption();
+        }),
+        into(breeding)
+            .insert(BreedingCompanion.insert(
+                kit: kits, date: DateTime.now(), breeder: mate, mate: breeder))
+            .onError((error, stackTrace) {
+          print("ERROR INSERT BREEDING: $error,$stackTrace");
+          throw DatabaseExeption();
+        })
+      ]);
 
   Stream<List<BreedingWithBreeder>> watchBreeding(int id) =>
       (select(breeding)..where((tbl) => tbl.breeder.equals(id)))
@@ -47,6 +56,9 @@ class BreedingDao extends DatabaseAccessor<AppDatabase>
         print("ERROR DELETE BREEDING: $error,$stackTrace");
         throw DatabaseExeption();
       });
+
+  // Future editBreeding({required int id,required BreedingWithBreeder breedingWithBreeder})=>(select(breeding
+  // ))
 }
 
 class BreedingWithBreeder {

@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:farmerlocalmobile/core/routes/app_router.gr.dart';
 import 'package:farmerlocalmobile/di/injection.dart';
-import 'package:farmerlocalmobile/features/domain/entities/user.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/breeders/breeders_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/splash/splash_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/user/user_bloc.dart';
 import 'package:farmerlocalmobile/features/presentation/bloc/watch_blocs/watch_breeder_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -262,107 +260,103 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          body: Provider<WatchBreederBloc>(
-            create: (_) => _watch,
-            child: Container(
-              child: StreamBuilder<BreedersResponse>(
-                stream: _watch.subJect.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data!.error != null &&
-                        snapshot.data!.error!.length > 0) {
-                      return Text("Error Msee");
-                    }
-                    if (snapshot.data!.breeders.isEmpty) {
-                      return Center(child: Text("EMPTY LIST"));
-                    }
-                    return ListView.separated(
-                      separatorBuilder: (c, i) => Divider(),
-                      itemCount: snapshot.data!.breeders.length,
-                      itemBuilder: (context, index) {
-                        final _breeder = snapshot.data!.breeders[index];
-                        return ListTile(
-                          onTap: () => AutoRouter.of(context)
-                              .push(DetailsRoute(breeders: _breeder)),
-                          onLongPress: () => showDialog(
-                            context: context,
-                            builder: (builder) => AlertDialog(
-                              title: Text("DELETE"),
-                              content: Text("Are you sure you want to delete?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(null),
-                                  child: Text(
-                                    "CANCEL",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.4,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: Text(
-                                    "DELETE",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.4,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ).then((value) {
-                            if (value != null && value) {
-                              //!DELETE HERE
-                              _breedersBloc
-                                  .add(DeleteBreederEvent(id: _breeder.id));
-                            } else {
-                              print("SOMETIMES YOU GOTTA LOSE SOMEBODY");
-                            }
-                          }).catchError((e, s) {
-                            print("ERROR DELETE: $e,$s");
-                          }),
-                          isThreeLine: true,
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: FileImage(
-                              File(_breeder.image!),
-                            ),
-                          ),
-                          title: Text(_breeder.name),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text((_breeder.gender ? "Buck" : "Doe") +
-                                  " (Buck/Doe)"),
-                              Text(
-                                  "${_breeder.weight.toStringAsFixed(1)} (kg)"),
-                              Text("${_breeder.age} (months)")
-                            ],
-                          ),
-                          trailing: IconButton(
-                            onPressed: () =>
-                                AutoRouter.of(context).push(AddBreederWidget(
-                              breeders: _breeder,
-                            )),
-                            icon: Icon(Icons.edit),
-                          ),
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
+          body: Container(
+            child: StreamBuilder<BreedersResponse>(
+              stream: _watch.subJect.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.error != null &&
+                      snapshot.data!.error!.length > 0) {
                     return Text("Error Msee");
                   }
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  if (snapshot.data!.breeders.isEmpty) {
+                    return Center(child: Text("EMPTY LIST"));
+                  }
+                  return ListView.separated(
+                    separatorBuilder: (c, i) => Divider(),
+                    itemCount: snapshot.data!.breeders.length,
+                    itemBuilder: (context, index) {
+                      final _breeder = snapshot.data!.breeders[index];
+                      return ListTile(
+                        onTap: () => AutoRouter.of(context)
+                            .push(DetailsRoute(breeders: _breeder)),
+                        onLongPress: () => showDialog(
+                          context: context,
+                          builder: (builder) => AlertDialog(
+                            title: Text("DELETE"),
+                            content: Text("Are you sure you want to delete?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(null),
+                                child: Text(
+                                  "CANCEL",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.4,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text(
+                                  "DELETE",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.4,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).then((value) {
+                          if (value != null && value) {
+                            //!DELETE HERE
+                            _breedersBloc
+                                .add(DeleteBreederEvent(id: _breeder.id));
+                          } else {
+                            print("SOMETIMES YOU GOTTA LOSE SOMEBODY");
+                          }
+                        }).catchError((e, s) {
+                          print("ERROR DELETE: $e,$s");
+                        }),
+                        isThreeLine: true,
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: FileImage(
+                            File(_breeder.image!),
+                          ),
+                        ),
+                        title: Text(_breeder.name),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text((_breeder.gender ? "Buck" : "Doe") +
+                                " (Buck/Doe)"),
+                            Text("${_breeder.weight.toStringAsFixed(1)} (kg)"),
+                            Text("${_breeder.age} (months)")
+                          ],
+                        ),
+                        trailing: IconButton(
+                          onPressed: () =>
+                              AutoRouter.of(context).push(AddBreederWidget(
+                            breeders: _breeder,
+                          )),
+                          icon: Icon(Icons.edit),
+                        ),
+                      );
+                    },
                   );
-                },
-              ),
+                } else if (snapshot.hasError) {
+                  return Text("Error Msee");
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             ),
           ),
           floatingActionButton: FloatingActionButton(

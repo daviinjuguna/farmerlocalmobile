@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:farmerlocalmobile/core/errors/exeptions.dart';
 import 'package:farmerlocalmobile/database/breeder/breeders_dao.dart';
 import 'package:farmerlocalmobile/database/breeder/breeders_table.dart';
 import 'package:farmerlocalmobile/database/breeding/breeding_dao.dart';
@@ -43,7 +44,8 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
+    final dbFolder = await getExternalStorageDirectory();
+    if (dbFolder == null) throw DatabaseExeption();
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file, logStatements: true);
   });
